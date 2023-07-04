@@ -12,7 +12,7 @@ export class TicketsController extends BaseController {
     try {
       const { query, itemsPerPage, startDate, endDate } = req.query
       let tickets: ITicket[] = ticketsData
-
+      const maxCount = Number(itemsPerPage) || 50
       if (!tickets) {
         return this.notFound(res)
       }
@@ -30,6 +30,9 @@ export class TicketsController extends BaseController {
           tickets,
           itemsPerPage: Number(itemsPerPage),
         })
+      }
+      if (!query || !startDate || !endDate) {
+        tickets = tickets.slice(0, maxCount)
       }
       return this.success<{ tickets: ITicket[]; count: number }>(res, {
         tickets,
